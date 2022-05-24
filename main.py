@@ -1,5 +1,5 @@
 from enum import Enum
-from fastapi import FastAPI
+from fastapi import FastAPI, Query, Path
 from typing import Union
 from pydantic import BaseModel
 
@@ -14,6 +14,38 @@ class Item(BaseModel):
 
 app = FastAPI()
 
+
+
+@app.get("/items/{item_id}")
+async def read_items(
+        *,
+        item_id: int = Path(title="The ID of the item to get", gt=0, le=1000),
+        q: str,
+):
+    results = {"item_id": item_id}
+    if q:
+        results.update({"q": q})
+    return results
+
+@app.get("/items/")
+async def read_items(
+        q: str
+           | None = Query(
+            default=None,
+            alias="item-query",
+            title="Query string",
+            description="Query string for the items to search in the database that have a good match",
+            min_length=3,
+            max_length=50,
+            regex="^fixedquery$",
+            deprecated=True,
+            include_in_schema=False
+        )
+):
+    results = {"items": [{"item_id": "Foo"}, {"item_id": "Bar"}]}
+    if q:
+        results.update({"q": q})
+    return results
 
 
 @app.put("/items/{item_id}")
@@ -39,12 +71,12 @@ class ModelName(str, Enum):
     lenet = "lenet"
 
 
-@app.get("/items/{item_id}")
-async def read_user_item(
-        item_id: str, needy: str, skip: int = 0, limit: Union[int, None] = None
-):
-    item = {"item_id": item_id, "needy": needy, "skip": skip, "limit": limit}
-    return item
+#@app.get("/items/{item_id}")
+#async def read_user_item(
+#        item_id: str, needy: str, skip: int = 0, limit: Union[int, None] = None
+#):
+#    item = {"item_id": item_id, "needy": needy, "skip": skip, "limit": limit}
+#    return item
 
 @app.get("/users/{user_id}/items/{item_id}")
 async def read_user_item(
@@ -60,23 +92,23 @@ async def read_user_item(
     return item
 
 
-@app.get("/items/{item_id}")
-async def read_item(item_id: str, q: Union[str, None] = None, short: bool = False):
-    item = {"item_id": item_id}
-    if q:
-        item.update({"q": q})
-    if not short:
-        item.update(
-            {"description": "This is an amazing item that has a long description"}
-        )
-    return item
+#@app.get("/items/{item_id}")
+#async def read_item(item_id: str, q: Union[str, None] = None, short: bool = False):
+#    item = {"item_id": item_id}
+#    if q:
+#        item.update({"q": q})
+#    if not short:
+#        item.update(
+#            {"description": "This is an amazing item that has a long description"}
+#        )
+#    return item
 
 
 fake_items_db = [{"item_name": "Foo"}, {"item_name": "Bar"}, {"item_name": "Baz"}]
 
-@app.get("/items/")
-async def read_item(skip: int = 0, limit: int = 5):
-    return fake_items_db[skip : skip + limit]
+#@app.get("/items/")
+#async def read_item(skip: int = 0, limit: int = 5):
+#    return fake_items_db[skip : skip + limit]
 
 @app.get("/files/{file_path:path}")
 async def read_file(file_path: str):
@@ -96,6 +128,6 @@ async def get_model(model_name: ModelName):
 async def root():
     return {"message": "Hello World"}
 
-@app.get("/items/{item_id}")
-async def read_item(item_id: int):
-    return {"item_id": item_id}
+#@app.get("/items/{item_id}")
+#async def read_item(item_id: int):
+#    return {"item_id": item_id}
