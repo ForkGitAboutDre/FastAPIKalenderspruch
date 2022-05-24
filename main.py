@@ -1,5 +1,5 @@
 from enum import Enum
-from fastapi import FastAPI, Query, Path
+from fastapi import FastAPI, Query, Path, Body
 from typing import Union
 from pydantic import BaseModel
 
@@ -12,9 +12,29 @@ class Item(BaseModel):
     tax: Union[float, None] = None
 
 
+class User(BaseModel):
+    username: str
+    full_name: Union[str, None] = None
+
+
+
+
+
 app = FastAPI()
 
-
+@app.put("/items/{item_id}")
+async def update_item(
+        *,
+        item_id: int,
+        item: Item,
+        user: User,
+        importance: int = Body(embed=False),
+        q: Union[str, None] = None
+):
+    results = {"item_id": item_id, "item": item, "user": user, "importance": importance}
+    if q:
+        results.update({"q": q})
+    return results
 
 @app.get("/items/{item_id}")
 async def read_items(
@@ -48,12 +68,12 @@ async def read_items(
     return results
 
 
-@app.put("/items/{item_id}")
-async def create_item(item_id: int, item: Item, q: Union[str, None] = None):
-    result = {"item_id": item_id, **item.dict()}
-    if q:
-        result.update({"q": q})
-    return result
+#@app.put("/items/{item_id}")
+#async def create_item(item_id: int, item: Item, q: Union[str, None] = None):
+#    result = {"item_id": item_id, **item.dict()}
+#    if q:
+#        result.update({"q": q})
+#    return result
 
 @app.post("/items/")
 async def create_item(item: Item):
