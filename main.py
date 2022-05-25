@@ -1,26 +1,43 @@
 from enum import Enum
 from fastapi import FastAPI, Query, Path, Body
-from typing import Union
-from pydantic import BaseModel
+from typing import Union, Set, List
+from pydantic import BaseModel, Field, HttpUrl
 
 FastAPIKalenderspruch = FastAPI()
-
-class Item(BaseModel):
-    name: str
-    description: Union[str, None] = None
-    price: float
-    tax: Union[float, None] = None
-
 
 class User(BaseModel):
     username: str
     full_name: Union[str, None] = None
 
+class Image(BaseModel):
+    url: HttpUrl
+    name: str
 
 
+class Item(BaseModel):
+    name: str
+    description: Union[str, None] = Field(
+        default=None, title="The description of the item", max_length=300
+    )
+    price: float
+    tax: Union[float, None] = None
+    tags: Set[str] = set()
+    images: Union[List[Image], None] = None
+
+
+class Offer(BaseModel):
+    name: str
+    description: Union[str, None] = None
+    price: float
+    items: List[Item]
 
 
 app = FastAPI()
+
+@app.post("/offers/")
+async def create_offer(offer: Offer):
+    return offer
+
 
 @app.put("/items/{item_id}")
 async def update_item(
