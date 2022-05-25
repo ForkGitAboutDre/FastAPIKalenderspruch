@@ -1,7 +1,7 @@
 from enum import Enum
 from fastapi import FastAPI, Query, Path, Body
-from typing import Union, Set, List
-from pydantic import BaseModel, Field, HttpUrl
+from typing import Union, Set, List, Dict
+from pydantic import BaseModel, HttpUrl
 
 FastAPIKalenderspruch = FastAPI()
 
@@ -16,13 +16,11 @@ class Image(BaseModel):
 
 class Item(BaseModel):
     name: str
-    description: Union[str, None] = Field(
-        default=None, title="The description of the item", max_length=300
-    )
+    description: Union[str, None] = None
     price: float
     tax: Union[float, None] = None
     tags: Set[str] = set()
-    images: Union[List[Image], None] = None
+    image: Union[Image, None] = None
 
 
 class Offer(BaseModel):
@@ -34,6 +32,10 @@ class Offer(BaseModel):
 
 app = FastAPI()
 
+@app.post("/index-weights/")
+async def create_index_weights(weights: Dict[int, float]):
+    return weights
+
 @app.post("/offers/")
 async def create_offer(offer: Offer):
     return offer
@@ -43,15 +45,39 @@ async def create_offer(offer: Offer):
 async def update_item(
         *,
         item_id: int,
-        item: Item,
-        user: User,
-        importance: int = Body(embed=False),
-        q: Union[str, None] = None
+        item: Item = Body(
+            examples={
+                "normal": {
+                    "summary": "A normal example",
+                    "description": "A **normal** item works correctly.",
+                    "value": {
+                        "name": "Foo",
+                        "description": "A very nice Item",
+                        "price": 35.4,
+                        "tax": 3.2,
+                    },
+                },
+                "converted": {
+                    "summary": "An example with converted data",
+                    "description": "FastAPI can convert price `strings` to actual `numbers` automatically",
+                    "value": {
+                        "name": "Bar",
+                        "price": "35.4",
+                    },
+                },
+                "invalid": {
+                    "summary": "Invalid data is rejected with an error",
+                    "value": {
+                        "name": "Baz",
+                        "price": "thirty five point four",
+                    },
+                },
+            },
+        ),
 ):
-    results = {"item_id": item_id, "item": item, "user": user, "importance": importance}
-    if q:
-        results.update({"q": q})
+    results = {"item_id": item_id, "item": item}
     return results
+
 
 @app.get("/items/{item_id}")
 async def read_items(
