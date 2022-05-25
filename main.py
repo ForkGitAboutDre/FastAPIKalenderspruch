@@ -53,7 +53,6 @@ async def read_items(
         "duration": duration,
     }
 
-
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
