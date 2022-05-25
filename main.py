@@ -1,4 +1,4 @@
-from fastapi import FastAPI, status
+from fastapi import FastAPI, status, Form
 
 FastAPIKalenderspruch = FastAPI()
 
@@ -6,6 +6,7 @@ FastAPIKalenderspruch = FastAPI()
 
 app = FastAPI()
 
-@app.post("/items/", status_code=status.HTTP_402_PAYMENT_REQUIRED)
-async def create_item(name: str):
-    return {"name": name}
+
+@app.post("/login/")
+async def login(username: str = Form(), password: str = Form()):
+    return {"username": username}
