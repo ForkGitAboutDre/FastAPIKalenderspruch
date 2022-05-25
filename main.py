@@ -1,5 +1,7 @@
-from fastapi import FastAPI, Cookie, Header
+from fastapi import FastAPI
 from typing import Union, List
+
+from pydantic import BaseModel
 
 FastAPIKalenderspruch = FastAPI()
 
@@ -9,9 +11,24 @@ app = FastAPI()
 
 
 
-@app.get("/items/")
-async def read_items(x_token: Union[List[str], None] = Header(default=None)):
-    return {"X-Token values": x_token}
+class Item(BaseModel):
+    name: str
+    description: Union[str, None] = None
+    price: float
+    tax: float = 10.5
+    tags: List[str] = []
+
+
+items = {
+    "foo": {"name": "Foo", "price": 50.2},
+    "bar": {"name": "Bar", "description": "The bartenders", "price": 62, "tax": 20.2},
+    "baz": {"name": "Baz", "description": None, "price": 50.2, "tax": 10.5, "tags": []},
+}
+
+
+@app.get("/items/{item_id}", response_model=Item, response_model_exclude_unset=True)
+async def read_item(item_id: str):
+    return items[item_id]
 
 @app.get("/")
 async def root():
