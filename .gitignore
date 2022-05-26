@@ -129,3 +129,5 @@ dmypy.json
 .pyre/
 /sql_app.db
 /sql_app.db-journal
+/log.txt
+
