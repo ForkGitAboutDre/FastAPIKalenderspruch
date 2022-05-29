@@ -4,11 +4,6 @@ from datetime import date
 import random
 
 
-def get_quote_of_today(quotes:dict):
-    rand_index = __generate_random_number(date.today(), len(quotes))
-    return quotes[rand_index]
-
-
 def get_quote_of_day(quotes: dict, lookup_date: date):
     rand_index = __generate_random_number(lookup_date, len(quotes))
     return quotes[rand_index]
