@@ -30,7 +30,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/home/max/Schreibtisch/FastAPIKalenderspruch/tutorial_env"
+set -gx VIRTUAL_ENV "/home/max/Schreibtisch/FastAPIKalenderspruch/Kalenderspruch_env"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH
@@ -53,7 +53,7 @@ if test -z "$VIRTUAL_ENV_DISABLE_PROMPT"
         set -l old_status $status
 
         # Output the venv prompt; color taken from the blue of the Python logo.
-        printf "%s%s%s" (set_color 4B8BBE) "(tutorial_env) " (set_color normal)
+        printf "%s%s%s" (set_color 4B8BBE) "(Kalenderspruch_env) " (set_color normal)
 
         # Restore the return status of the previous command.
         echo "exit $old_status" | .
@@ -62,5 +62,5 @@ if test -z "$VIRTUAL_ENV_DISABLE_PROMPT"
     end
 
     set -gx _OLD_FISH_PROMPT_OVERRIDE "$VIRTUAL_ENV"
-    set -gx VIRTUAL_ENV_PROMPT "(tutorial_env) "
+    set -gx VIRTUAL_ENV_PROMPT "(Kalenderspruch_env) "
 end
