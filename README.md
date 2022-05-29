@@ -1,17 +1,15 @@
 
 # FastAPIKalenderspruch
 
-Endpoint, which gives back a **german** calendar saying.
+Endpoint, which returns a **german** 🇩🇪 calendar saying.
 
 Resolve your dependencies with:
 ```sh
 pip install -r requirements.txt
 ```
-Afterwards you can start your server with:
 
-```sh
-uvicorn main:app 
-```
-For further details, I would refer you to the API Documentation located at:
+Afterwards you can use `uvicorn main:app` to start the server. 
+
+For further details, I would refer you to the API documentation located at:
 
 `localhost:8000/docs`
